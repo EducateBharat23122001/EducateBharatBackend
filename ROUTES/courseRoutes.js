@@ -30,7 +30,7 @@ app.post('/addCourse', async (req, res) => {
 
 });
 app.post('/allCourses', async (req, res) => {
-    const { isUser } = req.body;
+    const { isUser } = req.body || {};
     const courses = isUser ?
         await Course.find({
             $or: [
