@@ -77,28 +77,31 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
+// app.post('/sendotp', async (req, res) => {
+//     const { phone } = req.body;
+//     const otp = Math.floor(1000 + Math.random() * 9000);
+//     const apiKey = process.env.FAST2SMS_API_KEY
+//     let url = `https://www.fast2sms.com/dev/bulkV2?authorization=KEHL1KxvTIz332qCcF9EpaGNlLB1fkfk0rtE2idhjDYJGKb5rJPGLbzBFYo7&route=otp&variables_values=${otp}&flash=0&numbers=${phone}`
+
+//     // console.log(url)
+
+//     fetch(url, {
+//         method: 'GET'
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log(data)
+//             res.status(200).json({ data, otp })
+//         })
+//         .catch(error => console.error(error));
+
+// });
+
+
+
 app.post('/sendotp', async (req, res) => {
-    const { phone } = req.body;
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    const apiKey = process.env.FAST2SMS_API_KEY
-    let url = `https://www.fast2sms.com/dev/bulkV2?authorization=KEHL1KxvTIz332qCcF9EpaGNlLB1fkfk0rtE2idhjDYJGKb5rJPGLbzBFYo7&route=otp&variables_values=${otp}&flash=0&numbers=${phone}`
-
-    // console.log(url)
-
-    fetch(url, {
-        method: 'GET'
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            res.status(200).json({ data, otp })
-        })
-        .catch(error => console.error(error));
-
+   
 });
-
-
-
 
 
 
