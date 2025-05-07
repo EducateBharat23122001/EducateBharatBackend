@@ -123,11 +123,13 @@ app.post('/signin', async (req, res) => {
                         res.json({ message: "Token Generated Successfully", token: token, user: savedUser })
                     }
                     else {
-                        return res.status(422).json({ error: "Invalid phone number or password" })
+                        return res.status(422).json({ error: "Invalid email or password" })
                     }
                 })
                 .catch(err => {
                     console.log(err);
+                    return res.status(422).json({ error: "Invalid email or password" })
+
                 })
         })
 });
