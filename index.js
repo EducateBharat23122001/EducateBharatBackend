@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const path = require("path");
-
+const nodemailer = require('nodemailer');
+const otpGenerator = require('otp-generator');
 
 const port = process.env.PORT || 4000;
 
@@ -77,31 +78,39 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-// app.post('/sendotp', async (req, res) => {
-//     const { phone } = req.body;
-//     const otp = Math.floor(1000 + Math.random() * 9000);
-//     const apiKey = process.env.FAST2SMS_API_KEY
-//     let url = `https://www.fast2sms.com/dev/bulkV2?authorization=KEHL1KxvTIz332qCcF9EpaGNlLB1fkfk0rtE2idhjDYJGKb5rJPGLbzBFYo7&route=otp&variables_values=${otp}&flash=0&numbers=${phone}`
-
-//     // console.log(url)
-
-//     fetch(url, {
-//         method: 'GET'
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log(data)
-//             res.status(200).json({ data, otp })
-//         })
-//         .catch(error => console.error(error));
-
-// });
-
 
 
 app.post('/sendotp', async (req, res) => {
-   
+    const { email } = req.body;
+
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
+    const otp = otpGenerator.generate(4, { digits: true, upperCase: false, specialChars: false });
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your OTP code is: ${otp}`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'OTP sent successfully', otp }); // Send OTP back only for dev/testing
+    } catch (error) {
+        console.log('FAILED TO SEND OTP ', error);
+        res.status(500).json({ message: 'Failed to send OTP', error });
+    }
 });
+
 
 
 
